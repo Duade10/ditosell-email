@@ -8,6 +8,7 @@ app = FastAPI()
 class ActivationMailModel(BaseModel):
     to_mail: str
     activation_url: str
+    template_code: str
 
 
 @app.get("/")
@@ -22,11 +23,15 @@ async def send_activation_mail(item: ActivationMailModel):
     headers = {
         "Authorization": f"Bearer {api_key}",
     }
-    data = {
-        "email": item.to_mail,
-        "activation_url": item.activation_url,
+    payload = {
+        "recipient_email": item.to_mail,
+        "template_code": item.template_code,
+        "data": {
+            "activate_url": item.activation_url,
+        }
+       
     }
-    response = requests.post(url, headers=headers, data=data)
+    response = requests.post(url, headers=headers, data=payload)
     print(response.status_code)
     print(response.text)
     return response.status_code
