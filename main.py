@@ -80,16 +80,14 @@ async def add_to_contact(item: AddToContactModel):
     return response.status_code
 
 
-@app.get("/get-audience/{email_address}}")
+@app.get("/get-audience/{email_address}/")
 async def get_audience(email_address: str):
-    url = f"https://users.go-mailer.com/api/contacts/:{email_address}/audiences"
+    url = f"https://users.go-mailer.com/api/contacts/{email_address}/audiences"
     api_key = "SGFrZWVtLTM4NDE1MzQ4OTc3NS4xMTExNS0xMjU="
     headers = {
         "Authorization": f"Bearer {api_key}",
     }
-    payload = {
-        "email_address": email_address
-    }
+    payload = {"email_address": email_address}
     response = requests.get(url=url, headers=headers, data=payload)
     print(response.text)
     return response.status_code
