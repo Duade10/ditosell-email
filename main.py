@@ -53,8 +53,6 @@ async def send_welcome_mail(item: WelcomeMailModel):
         "data": {"first_name,": "Otunla",},
     }
     response = requests.post(url, headers=headers, data=payload)
-    print(response.status_code)
-    print(response.text)
     return response
 
 
