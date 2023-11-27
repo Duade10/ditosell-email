@@ -1,8 +1,17 @@
 import requests
+import os
 from fastapi import FastAPI
 from pydantic import BaseModel
+from dotenv import load_dotenv
 
 app = FastAPI()
+
+load_dotenv()
+
+
+@app.get("/")
+async def root():
+    return {"message": "Hello"}
 
 
 class ActivationMailModel(BaseModel):
@@ -11,15 +20,10 @@ class ActivationMailModel(BaseModel):
     template_code: str = None
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello"}
-
-
 @app.post("/send-activation-mail/")
 async def send_activation_mail(item: ActivationMailModel):
-    api_key = "SGFrZWVtLTM4NDE1MzQ4OTc3NS4xMTExNS0xMjU="
-    url = "https://mailing.go-mailer.com/api/v1/transactionals/dispatch"
+    api_key = os.environ.get("API_KEY")
+    url = os.environ.get("TRANSACTIONAL_EMAIL_URL")
     headers = {
         "Authorization": f"Bearer {api_key}",
     }
@@ -42,8 +46,8 @@ class WelcomeMailModel(BaseModel):
 
 @app.post("/send-welcome-mail")
 async def send_welcome_mail(item: WelcomeMailModel):
-    api_key = "SGFrZWVtLTM4NDE1MzQ4OTc3NS4xMTExNS0xMjU="
-    url = "https://mailing.go-mailer.com/api/v1/transactionals/dispatch"
+    api_key = os.environ.get("API_KEY")
+    url = os.environ.get("TRANSACTIONAL_EMAIL_URL")
     headers = {
         "Authorization": f"Bearer {api_key}",
     }
@@ -66,8 +70,8 @@ class AddToContactModel(BaseModel):
 
 @app.post("/add-to-contact/")
 async def add_to_contact(item: AddToContactModel):
-    url = "https://users.go-mailer.com/api/contacts"
-    api_key = "SGFrZWVtLTM4NDE1MzQ4OTc3NS4xMTExNS0xMjU="
+    url = os.environ.get("CONTACT_EMAIL_URL")
+    api_key = os.environ.get("API_KEY")
     headers = {
         "Authorization": f"Bearer {api_key}",
     }
@@ -83,11 +87,10 @@ async def add_to_contact(item: AddToContactModel):
 @app.get("/get-audience/{email_address}/")
 async def get_audience(email_address: str):
     url = f"https://users.go-mailer.com/api/contacts/{email_address}/audiences"
-    api_key = "SGFrZWVtLTM4NDE1MzQ4OTc3NS4xMTExNS0xMjU="
+    api_key = os.environ.get("API_KEY")
     headers = {
         "Authorization": f"Bearer {api_key}",
     }
     payload = {"email_address": email_address}
     response = requests.get(url=url, headers=headers, data=payload)
-    print(response.text)
     return response.status_code
