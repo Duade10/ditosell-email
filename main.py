@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
+print("Executing main.py")
+
 app = FastAPI()
 
 load_dotenv()
